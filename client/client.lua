@@ -273,35 +273,14 @@ CreateThread(function()
         Wait(1000)
     end
 end)
-
----------------------------------------------------------------------
--- player death loop
----------------------------------------------------------------------
-CreateThread(function()
-    repeat Wait(1000) until LocalPlayer.state['isLoggedIn']
-    while true do
-        local health = LocalPlayer.state.health
-            if health == 0 and deathactive == false then
-                exports.spawnmanager:setAutoSpawn(false)
-                deathTimerStarted = true
-                deathTimer()
-                deathLog()
-                deathactive = true
-                TriggerServerEvent("RSGCore:Server:SetMetaData", "isdead", true)
-                LocalPlayer.state:set('isdead', true, true)
-                TriggerEvent('rsg-medic:client:DeathCam')
-            end
-        Wait(1000)
-    end
-end)
----------------------------------------------------------------------
+----------------------------------------------------------------
 -- player combat log check
 ---------------------------------------------------------------------
 RegisterNetEvent('RSGCore:Client:OnPlayerLoaded', function()
     local PlayerData = RSGCore.Functions.GetPlayerData()
-    local health = LocalPlayer.state.health
+    local health = GetEntityHealth(cache.ped)
         if PlayerData.metadata['isdead'] then
-            if health >= 0 and deathactive == false then
+            if health ~= 0 and deathactive == false then
                 SetEntityHealth(cache.ped, 0)
                 exports.spawnmanager:setAutoSpawn(false)
                 deathTimerStarted = true
